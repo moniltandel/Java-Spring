@@ -1,0 +1,105 @@
+package com.example.demo.security;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+public class SecurityConfig {
+	
+	@Autowired
+	PasswordEncoder encoder;
+	
+	
+//	
+//	@Bean
+//	public UserDetailsManager detailsManager() {
+//		UserDetails adminUser = 
+//				User.withUsername("admin")
+//				.password(encoder.encode("admin"))
+//				.roles("ADMIN").build();
+//		
+//		
+//		UserDetails publicUser = 
+//				User.withUsername("user")
+//				.password(encoder.encode("user"))
+//				.roles("USER").build();
+//		
+//		InMemoryUserDetailsManager detailsManager = 
+//				new InMemoryUserDetailsManager(adminUser,publicUser);
+//		return detailsManager;
+//	}
+	
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http
+		.csrf()
+		.disable()
+		.authorizeHttpRequests()
+		//  ---------------  auth  ---------------
+		.requestMatchers("/auth/**")
+		.permitAll()
+		//------------------   USER ------------------------
+		.requestMatchers(HttpMethod.POST,"/users/**")
+		.permitAll()
+		.requestMatchers(HttpMethod.PUT,"/users/**")
+		.hasRole("USER")
+		.requestMatchers(HttpMethod.DELETE,"/users/**")
+		.hasRole("USER")
+		.requestMatchers(HttpMethod.GET,"/users/**")
+		.permitAll()
+		
+		// ----------------  Blog ---------------------
+		.requestMatchers(HttpMethod.GET,"/blog")
+		.permitAll()
+		.requestMatchers(HttpMethod.GET,"/blog/**")
+		.hasRole("USER")
+		.requestMatchers(HttpMethod.POST,"/blog/**")
+		.hasRole("USER")
+		.requestMatchers(HttpMethod.PUT,"/blog/**")
+		.hasRole("USER")
+		.requestMatchers(HttpMethod.DELETE,"/blog/**")
+		.hasRole("USER")
+		
+		// -----------------  Blog Category -----------------
+		.requestMatchers(HttpMethod.GET,"/blogcategories/**")
+		.hasAnyRole("USER","ADMIN")
+		.requestMatchers(HttpMethod.POST,"/blogcategories/**")
+		.hasRole("ADMIN")
+		.requestMatchers(HttpMethod.PUT,"/blogcategories/**")
+		.hasRole("ADMIN")
+		.requestMatchers(HttpMethod.DELETE,"/blogcategories/**")
+		.hasRole("ADMIN")
+		
+		
+		// ----------------   Review ------------------------
+		.requestMatchers(HttpMethod.GET,"/reviews/**")
+		.permitAll()
+		.requestMatchers(HttpMethod.POST,"/reviews/**")
+		.hasRole("USER")
+		.requestMatchers(HttpMethod.PUT,"/reviews/**")
+		.hasRole("USER")
+		.requestMatchers(HttpMethod.DELETE,"/reviews/**")
+		.hasRole("USER")
+		.anyRequest()
+		.authenticated()
+		.and()
+		.exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPoint))
+		return http.build();	
+	}
+	
+}

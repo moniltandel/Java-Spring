@@ -1,0 +1,7 @@
+1763538543197	Rename type 'Blog'
+1763538613414	Rename type 'BlogCategory'
+1763538655122	Rename type 'Category'
+1763539344365	Rename type 'CategoryRepo'
+1763539394360	Rename type 'CategoryService'
+1763539428564	Rename type 'CategoryServiceImpl'
+1763539493173	Rename compilation unit 'BlogCatController.java'

@@ -1,0 +1,45 @@
+package com.example.demo.controller;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.dto.JwtResponse;
+import com.example.demo.dto.RefreshTokenRequest;
+import com.example.demo.dto.UserDto;
+import com.example.demo.model.User;
+import com.example.demo.repo.UserRepo;
+import com.example.demo.serviceimpl.JwtService;
+
+@RestController
+public class AuthController {
+	
+	@Autowired
+	AuthenticationManager authenticationManager;
+	
+	@Autowired
+	JwtService jwtService;
+	
+	@Autowired
+	UserRepo userRepo;
+	
+	@Autowired
+	ModelMapper mapper;
+	
+	@PostMapping("/login")
+	public ResponseEntity userLogin(@RequestBody UserDto dto) {
+		
+		
+			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getName(), dto.getPassword()));
+			
+		 
+	}
+	
+	
+}

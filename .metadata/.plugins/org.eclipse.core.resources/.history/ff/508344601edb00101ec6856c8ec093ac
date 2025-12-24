@@ -1,0 +1,72 @@
+package com.example.demo.controller;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.dto.JwtResponse;
+import com.example.demo.dto.RefreshTokenRequest;
+import com.example.demo.dto.UserDto;
+import com.example.demo.model.User;
+import com.example.demo.repo.UserRepo;
+import com.example.demo.serviceimpl.JwtService;
+
+@RestController
+public class AuthController {
+	
+	@Autowired
+	AuthenticationManager authenticationManager;
+	
+	@Autowired
+	JwtService jwtService;
+	
+	@Autowired
+	UserRepo userRepo;
+	
+	@Autowired
+	ModelMapper mapper;
+	
+	@PostMapping("/login")
+	public ResponseEntity userLogin(@RequestBody UserDto dto) {
+		
+		try {
+			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getName(), dto.getPassword()));
+			String accessToken = jwtService.generateToken(dto.getName(), true);
+			String refreshToken = jwtService.generateToken(dto.getName(), false);
+			
+			User u = userRepo.findByName(dto.getName());
+			UserDto dto1 = mapper.map(u, UserDto.class);
+			
+			return new ResponseEntity<>(new JwtResponse(accessToken,refreshToken,dto1),HttpStatus.OK);
+		}catch(Exception e) {
+			return new ResponseEntity<>("Invalid Credentials",HttpStatus.UNAUTHORIZED);
+		}
+		
+		
+	} 
+	
+	@PostMapping("/refresh-token")
+	public ResponseEntity getRefreshToken(@RequestBody RefreshTokenRequest request) {
+		if(jwtService.validateToken(request.refreshToken())) {
+			String usernameFromToken = jwtService.getUsernamefromToken(request.refreshToken());
+			String accessToken = jwtService.generateToken(usernameFromToken, true);
+			String refreshToken = jwtService.generateToken(usernameFromToken, false);
+			
+			User user = userRepo.findByName(usernameFromToken);
+			UserDto userdto = mapper.map(user, UserDto.class);
+			
+			return new ResponseEntity<>(new JwtResponse(accessToken,refreshToken,userdto),HttpStatus.OK);
+		}
+		
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invlid Token");
+	}
+	
+	
+	
+}

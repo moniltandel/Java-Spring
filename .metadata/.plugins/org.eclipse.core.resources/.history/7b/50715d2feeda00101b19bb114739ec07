@@ -1,0 +1,9 @@
+package com.example.demo.serviceimpl;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class JwtService {
+	public static final String SECRET_KEY = "fdftrtrtrebcvfrrtrtretretrewtrtretretrerertreyyrretrert";
+	
+}

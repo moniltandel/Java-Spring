@@ -1,0 +1,14 @@
+package com.example.demo.service;
+
+import java.util.List;
+
+import com.example.demo.dto.Studentdto;
+import com.example.demo.model.Student;
+
+public interface StudentService {
+	public Studentdto addStudent(Studentdto dto);
+	public List<Studentdto> allStudents();
+	public Studentdto studentById(int id);
+	public Studentdto updateStudent(Studentdto dto, int id);
+	public void deleteStudent(int id);
+}

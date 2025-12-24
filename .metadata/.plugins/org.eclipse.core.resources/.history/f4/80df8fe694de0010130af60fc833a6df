@@ -1,0 +1,50 @@
+package com.example.demo.serviceimpl;
+
+import java.util.List;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.demo.dto.Studentdto;
+import com.example.demo.model.Student;
+import com.example.demo.service.StudentService;
+
+@Service
+public class StudentServiceImpl implements StudentService{
+	
+	@Autowired
+	ModelMapper mapper;
+	
+	
+	@Override
+	public Studentdto addStudent(Studentdto dto) {
+		
+		return null;
+	}
+
+	@Override
+	public List<Studentdto> allStudents() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Student studentById(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Studentdto updateStudent(Studentdto dto, int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void deleteStudent(int id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

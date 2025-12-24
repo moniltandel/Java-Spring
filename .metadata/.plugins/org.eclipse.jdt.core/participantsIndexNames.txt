@@ -1,0 +1,5 @@
+INDEX VERSION 1.134
+F:\springworkspace\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\1322052565.index
+\A000_SpringBoot_ecommerce\src\main\java
+F:\springworkspace\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\592724003.index
+\A009_SpringBoot_crud\src\main\java
